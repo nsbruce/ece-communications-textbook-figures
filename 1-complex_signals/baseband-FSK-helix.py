@@ -1,15 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy.signal import square
 
-fs=100 #Hz
-fc=1 #Hz
+fs=100 # sample rate, Hz
+fm=1 # message frequency, Hz
 t=2 # duration, seconds
-phi = 0 # Phase, radians
+fc=0 # carrier frequency, Hz (zero for baseband)
+beta=3
 
 t_arr = np.arange(0,t,fs**-1) # The array of time samples
 
-signal = np.exp(1j*(2*np.pi*fc*t_arr+phi))
+phi = beta*np.sin(2*np.pi*fm*t_arr) # message
+signal = np.exp(1j*phi) * np.exp(1j*-np.pi/4)
 
 x=t_arr
 y=np.real(signal)
@@ -24,6 +27,6 @@ fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
 ax.plot(x, y, z)
 
 csvDF=pd.concat([x_pd, y_pd, z_pd], axis=1)
-csvDF.to_csv("basic-helix.csv", index=False)
+csvDF.to_csv("baseband-FSK-helix.csv", index=False)
 
 plt.show()
